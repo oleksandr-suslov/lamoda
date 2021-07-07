@@ -82,7 +82,7 @@ cartOverlay.addEventListener('click', event => {
 
 // render cards goods
 let hash = location.hash.substring(1);
-console.log(location);
+// console.log(location);
 try {
     const goodsList = document.querySelector('.goods__list');
     if (!goodsList) {
@@ -117,18 +117,28 @@ try {
             goodsList.append(card)
         })
     }
+function changeTitle() {
+    const goodsTitle = document.querySelector('.goods__title');
+    const navigationLink = document.querySelectorAll('.navigation__link')
+    for (let i = 0; i < navigationLink.length; i++) {
+        if (navigationLink[i].hash === location.hash) {
+          goodsTitle.textContent = navigationLink[i].textContent;
+        };
+      };
+}
 
     window.addEventListener('hashchange', () => {
         hash = location.hash.substring(1);
         getGoods(renderGoodsList, hash);
+        changeTitle()
         
-        const goodsTitle = document.querySelector('.goods__title');
-
-        goodsTitle.textContent = hash;
-
+        
     })
-getGoods(renderGoodsList, hash);
-
+    changeTitle()
+    getGoods(renderGoodsList, hash);
+    
+    
+    
 } catch (err) {
     console.warn(err)
 }
