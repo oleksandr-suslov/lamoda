@@ -12,6 +12,18 @@ localStorage.setItem('lomoda-location', city)
 
 const getLocalStorage = () => JSON?.parse(localStorage.getItem('cart-lomoda')) || [];
 const setLocalStorage = data => localStorage.setItem('cart-lomoda', JSON.stringify(data));
+
+// склоняен надпись количество товаров в корзине
+const declOfNum = (n, titles) => {
+    return n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
+        0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+}
+// ========
+
+
+
+
+
 const renderCart = () => {
     cartListGoods.textContent = '';
     
@@ -39,6 +51,7 @@ const deleteItemCart = id => {
     const cartItems = getLocalStorage();
     const newCartItems = cartItems.filter(item => item.id !== id);
     setLocalStorage(newCartItems);
+    updateCountGodosCart();
 }
 
 cartListGoods.addEventListener('click',  (e) => {
@@ -102,6 +115,15 @@ const getGoods = (callback, prop, value) => {
 
 const subheaderCart = document.querySelector('.subheader__cart')
 const cartOverlay = document.querySelector('.cart-overlay');
+
+const updateCountGodosCart = () => {
+    if (getLocalStorage().length) {
+        subheaderCart.textContent = declOfNum(getLocalStorage().length, ['товар', 'товара', 'товаров']);
+    } else {
+        subheaderCart.textContent = 'Корзина';
+    }
+}
+updateCountGodosCart();
 
 const cartModalOpen = () => {
     cartOverlay.classList.add('cart-overlay-open');
@@ -189,7 +211,6 @@ try {
     if (!document.querySelector('.card-good')) {
         throw 'This is not a card-good page!!!';
     }
-
     const cardGoodImage = document.querySelector('.card-good__image');
     const cardGoodBrand = document.querySelector('.card-good__brand');
     const cardGoodTitle = document.querySelector('.card-good__title');
@@ -232,8 +253,9 @@ try {
         if ( getLocalStorage().some(item => item.id === id)) {
             cardGoodBuy.classList.add('delete');
             cardGoodBuy.textContent = 'Удалить из корзины';
+            
         }
-
+        // updateCountGodosCart();
         cardGoodBuy.addEventListener('click', () => {
             if (cardGoodBuy.classList.contains('delete')) {
                 deleteItemCart(id);
@@ -251,6 +273,7 @@ try {
             const cardData = getLocalStorage();
             cardData.push(data);
             setLocalStorage(cardData);
+            updateCountGodosCart();
         })
     };
     cardGoodSelectWrapper.forEach( item => {
@@ -272,7 +295,6 @@ try {
     //     if (color)
     // })
     getGoods(renderCardGood, 'id', hash);
-
 
 } catch(err) {
     console.warn(err)
